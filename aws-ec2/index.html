@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Server Online</title>
+
+  <style>
+    :root {
+      --bg1: #05060a;
+      --bg2: #0b1220;
+      --accent1: #00e5ff;
+      --accent2: #7c4dff;
+      --text: #eaf6ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .glow-orb {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0,229,255,0.25), transparent 60%);
+      filter: blur(50px);
+      animation: drift 12s infinite alternate ease-in-out;
+    }
+
+    .glow-orb.purple {
+      background: radial-gradient(circle, rgba(124,77,255,0.25), transparent 60%);
+      animation-duration: 16s;
+      top: 20%;
+      left: 60%;
+    }
+
+    @keyframes drift {
+      from { transform: translate(-10%, -10%) scale(1); }
+      to { transform: translate(10%, 10%) scale(1.2); }
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      padding: 50px 40px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 0 60px rgba(0,229,255,0.12);
+      animation: float 6s ease-in-out infinite;
+      z-index: 2;
+      max-width: 600px;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin: 0 0 10px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      opacity: 0.85;
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+
+    .badge {
+      margin-top: 18px;
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid rgba(0,229,255,0.35);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+      opacity: 0.6;
+      z-index: 2;
+    }
+
+    .poem {
+      margin-top: 14px;
+      font-style: italic;
+      font-size: 1.6rem;
+      line-height: 1.8;
+      opacity: 0.95;
+      min-height: 110px;
+      transition: opacity 0.6s ease;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="glow-orb"></div>
+  <div class="glow-orb purple"></div>
+
+  <div class="container">
+    <h1>🚀 Server Online</h1>
+    <p>
+      Your Nginx instance is alive, quietly orchestrating requests through digital night currents.
+    </p>
+
+    <div class="badge">STATUS: OK • DEPLOYED • READY</div>
+  </div>
+
+  <footer>
+    Powered by Nginx • Crafted for EC2 • Infrastructure with personality ✨
+    <div class="poem" id="poemBox"></div>
+  </footer>
+
+  <script>
+    // Starfield
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const stars = Array.from({ length: 120 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.5,
+      d: Math.random() * 0.5
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        s.y += s.d;
+        if (s.y > canvas.height) s.y = 0;
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Poem engine
+    const poems = [
+      `Packets drift like falling snow,<br>Through ports where silent systems glow.<br>A request becomes a star in flight,<br>Resolved in pulses made of light.`,
+
+      `In racks where quiet fans exhale,<br>Lives a world of logic, steel, and scale.<br>No sleep, no dream, yet still it weaves,<br>A tapestry of served-up dreams.`,
+
+      `The server hums, a patient tide,<br>Where HTTP rivers slide.<br>Each response a whispered art,<br>From silicon and beating heart.`,
+
+      `Digital winds through sockets pass,<br>Over keys of cloud and glass.<br>And in that flow, both still and fast,<br>The present eats the past.`,
+
+      `A lighthouse made of code and strain,<br>Guiding data through the rain.<br>It never asks what it should be,<br>Just serves the world invisibly.`,
+
+      `Inside the silence of machine,<br>Where human eyes are rarely seen,<br>A poem forms in voltage streams,<br>And renders life from broken dreams.`
+    ];
+
+    let index = 0;
+    const box = document.getElementById("poemBox");
+
+    function showPoem() {
+      box.style.opacity = 0;
+      setTimeout(() => {
+        box.innerHTML = poems[index];
+        box.style.opacity = 1;
+        index = (index + 1) % poems.length;
+      }, 400);
+    }
+
+    showPoem();
+    setInterval(showPoem, 5000);
+  </script>
+</body>
+</html>
