@@ -50,4 +50,4 @@ Learn Terraform by building and experimenting.
 
 ## 📌 Status
 
-Work in progress 🚧
+Work in progress.... 🚧
